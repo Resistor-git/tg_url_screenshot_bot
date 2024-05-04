@@ -2,8 +2,9 @@ from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import Command
 ###
-from selenium import webdriver
 import re
+from pathlib import Path
+from selenium import webdriver
 ###
 from lexicon import LEXICON_RUS
 
@@ -12,7 +13,10 @@ router_screenshot = Router()
 
 async def test_screenshot():
     # перенести в helpers или типа того
-    driver = webdriver.Chrome()
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    driver = webdriver.Chrome(options=options)
     driver.get("https://stepik.org/")
 
     current_url = driver.current_url

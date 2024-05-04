@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher
 # from aiogram.enums import ParseMode
 
 from config_data.config import Config, load_config
-from handlers import router_other
+from handlers import router_screenshot, router_other
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +31,7 @@ async def main():
     # dispatcher = Dispatcher(storage=storage)
     # dispatcher.workflow_data.update()  # всякие дополнительные данные
     dispatcher.include_router(router_other)
+    dispatcher.include_router(router_screenshot)
 
     # await set_main_menu(bot)
     # await bot.delete_webhook(drop_pending_updates=True)  # пропуск накопившихся апдейтов - не нужен?

@@ -48,13 +48,13 @@ async def process_message_with_url(message: Message) -> None:
                             media=FSInputFile("data/screenshots/screenshot.png")
                         )
                     )
-                except ErrorEvent:
+                except WebDriverException:
                     await asyncio.sleep(5)
-                    await take_screenshot(address)
                     await bot_response.edit_media(
                         media=InputMediaPhoto(
-                            media=FSInputFile("data/screenshots/screenshot.png")
-                        )
+                            media=FSInputFile("data/sorry.png"),
+                            caption="Что-то пошло не так. Пожалуйста, извините и повторите запрос",
+                        ),
                     )
 
 

@@ -1,7 +1,9 @@
+import asyncio
 import re
 
 from aiogram import Router, Bot
 from aiogram.types import Message, ErrorEvent, InputMediaPhoto, FSInputFile
+from selenium.common import WebDriverException
 
 from helpers import take_screenshot
 from lexicon import LEXICON_RUS
@@ -39,13 +41,21 @@ async def process_message_with_url(message: Message) -> None:
                     caption=LEXICON_RUS["processing"],
                     reply_to_message_id=message.message_id,
                 )
-                await take_screenshot(address)
-                await bot_response.edit_media(
-                    media=InputMediaPhoto(
-                        media=FSInputFile("data/screenshots/screenshot.png")
+                try:
+                    await take_screenshot(address)
+                    await bot_response.edit_media(
+                        media=InputMediaPhoto(
+                            media=FSInputFile("data/screenshots/screenshot.png")
+                        )
                     )
-                )
-
+                except WebDriverException:
+                    await asyncio.sleep(5)
+                    await take_screenshot(address)
+                    await bot_response.edit_media(
+                        media=InputMediaPhoto(
+                            media=FSInputFile("data/screenshots/screenshot.png")
+                        )
+                    )
 
 # @router_screenshot.error()
 # async def error_handler(event: ErrorEvent):

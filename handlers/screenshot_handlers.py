@@ -48,7 +48,7 @@ async def process_message_with_url(message: Message) -> None:
                             media=FSInputFile("data/screenshots/screenshot.png")
                         )
                     )
-                except WebDriverException:
+                except ErrorEvent:
                     await asyncio.sleep(5)
                     await take_screenshot(address)
                     await bot_response.edit_media(

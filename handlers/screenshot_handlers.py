@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import time
 
 from aiogram import Router, Bot
 from aiogram.types import Message, ErrorEvent, InputMediaPhoto, FSInputFile
@@ -33,6 +34,8 @@ async def process_message_with_url(message: Message) -> None:
     #         # await take_screenshot(match)
     #         # await message.answer(text='empty done')
 
+    start_time = time.time()
+
     entities: list = message.entities
     if entities:
         for entity in entities:
@@ -46,10 +49,14 @@ async def process_message_with_url(message: Message) -> None:
                 try:
                     screenshot_path, page_title = await take_screenshot(address)
                     # функция формирующая описание скриншота
+                    end_time = time.time()
+                    execution_time = end_time - start_time
+
                     await bot_response.edit_media(
                         media=InputMediaPhoto(
                             media=FSInputFile("data/screenshots/screenshot.png"),
-                            caption=f"{page_title}\n\nВеб-сайт: {address}",
+                            caption=f"{page_title}\n\nВеб-сайт: {address}\nВремя обработки: {execution_time:.2f}"
+                            f" секунд",
                         )
                     )
                 except WebDriverException:

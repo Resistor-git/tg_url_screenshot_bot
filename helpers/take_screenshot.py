@@ -6,6 +6,7 @@ from selenium import webdriver
 logger = logging.getLogger(__name__)
 
 
+# @measure_execution_time
 async def take_screenshot(url: str) -> Path:
     """
     Takes a screenshot of the webpage and saves it to a file.

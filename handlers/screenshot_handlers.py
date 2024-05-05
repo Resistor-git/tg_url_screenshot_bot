@@ -1,5 +1,5 @@
 import asyncio
-import re
+import logging
 
 from aiogram import Router, Bot
 from aiogram.types import Message, ErrorEvent, InputMediaPhoto, FSInputFile
@@ -9,6 +9,8 @@ from helpers import take_screenshot
 from lexicon import LEXICON_RUS
 
 router_screenshot = Router()
+
+logger = logging.getLogger(__name__)
 
 
 @router_screenshot.message()
@@ -42,18 +44,21 @@ async def process_message_with_url(message: Message) -> None:
                     reply_to_message_id=message.message_id,
                 )
                 try:
-                    await take_screenshot(address)
+                    screenshot_path, page_title = await take_screenshot(address)
+                    # функция формирующая описание скриншота
                     await bot_response.edit_media(
                         media=InputMediaPhoto(
-                            media=FSInputFile("data/screenshots/screenshot.png")
+                            media=FSInputFile("data/screenshots/screenshot.png"),
+                            caption=f"{page_title}\n\nВеб-сайт: {address}",
                         )
                     )
                 except WebDriverException:
+                    logger.exception(f"Something went wrong. URL: {entity}")
                     await asyncio.sleep(5)
                     await bot_response.edit_media(
                         media=InputMediaPhoto(
                             media=FSInputFile("data/sorry.png"),
-                            caption="Что-то пошло не так. Пожалуйста, извините и повторите запрос",
+                            caption=LEXICON_RUS["error"],
                         ),
                     )
 

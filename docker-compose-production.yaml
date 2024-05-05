@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  screenshot_bot:
+    image: resistordocker/tg_url_screenshot_bot
+    restart: on-failure
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data

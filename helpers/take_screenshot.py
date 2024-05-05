@@ -3,8 +3,7 @@ from pathlib import Path
 from selenium import webdriver
 
 
-# УДАЛИ ДЕФОЛТНОЕ ЗНАЧЕНИЕ
-async def take_screenshot(url: str = "https://stepik.org/") -> Path:
+async def take_screenshot(url: str) -> Path:
     """
     Takes a screenshot of the webpage and saves it to a file.
     Returns the path to the saved file.

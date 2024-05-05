@@ -30,6 +30,7 @@ async def main():
     dispatcher = Dispatcher()
     # dispatcher = Dispatcher(storage=storage)
     # dispatcher.workflow_data.update()  # всякие дополнительные данные
+    # порядок регистрации роутеров имеет значение
     dispatcher.include_router(router_other)
     dispatcher.include_router(router_screenshot)
 

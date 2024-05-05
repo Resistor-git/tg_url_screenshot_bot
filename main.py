@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
+
 # from aiogram.client.default import DefaultBotProperties
 # from aiogram.enums import ParseMode
 
@@ -14,11 +15,13 @@ logger = logging.getLogger(__name__)
 async def main():
     logging.basicConfig(
         level=logging.INFO,
-        format="%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s"
+        format="%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s",
     )
     logger.info("Bot launch")
 
-    config: Config = load_config()  # адрес env фала можно не указывать, библиотека сама ищет
+    config: Config = (
+        load_config()
+    )  # адрес env фала можно не указывать, библиотека сама ищет
 
     # объект хранилища, чтобы хранить данные о пользователе в Redis
     # storage = ...

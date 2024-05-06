@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 @router_screenshot.message()
 async def process_message_with_url(message: Message) -> None:
     """
-    Checks if message from user has a url. If there is the url - sends the message with a screenshot of the webpage.
+    Checks if message from user has an url. If there is the url - sends the message with a screenshot of the webpage.
     :param message: message from the user (built-in aiogram type)
     :return: None
     """
@@ -56,7 +56,7 @@ async def process_message_with_url(message: Message) -> None:
 
                     await bot_response.edit_media(
                         media=InputMediaPhoto(
-                            media=FSInputFile("data/screenshots/screenshot.png"),
+                            media=FSInputFile(screenshot_path),
                             caption=f"{page_title}\n\nВеб-сайт: {address}\nВремя обработки: {execution_time:.2f}"
                             f" секунд",
                         )

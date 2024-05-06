@@ -27,7 +27,7 @@ async def process_message_with_url(message: Message) -> None:
     if entities:
         for entity in entities:
             if entity.type == "url":
-                address = address_formatter(entity.extract_from(message.text))
+                address = await address_formatter(entity.extract_from(message.text))
                 bot_response: Message = await message.answer_photo(
                     photo=FSInputFile("data/loading.gif"),
                     caption=LEXICON_RUS["processing"],

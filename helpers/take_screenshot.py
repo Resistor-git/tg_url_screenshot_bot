@@ -8,7 +8,7 @@ from selenium import webdriver
 logger = logging.getLogger(__name__)
 
 
-def address_formatter(url: str) -> str:
+async def address_formatter(url: str) -> str:
     """
     Formats the url, so it looks like https://something.com or http://something.com
     :param url: string, result of entity.extract_from aiogram method

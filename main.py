@@ -12,16 +12,14 @@ from handlers import router_screenshot, router_other
 logger = logging.getLogger(__name__)
 
 
-async def main():
+async def main() -> None:
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s",
     )
     logger.info("Bot launch")
 
-    config: Config = (
-        load_config()
-    )  # адрес env фала можно не указывать, библиотека сама ищет
+    config: Config = load_config()
 
     # объект хранилища, чтобы хранить данные о пользователе в Redis
     # storage = ...
@@ -42,4 +40,5 @@ async def main():
     await dispatcher.start_polling(bot)
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

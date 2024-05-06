@@ -47,7 +47,9 @@ async def process_message_with_url(message: Message) -> None:
                     reply_to_message_id=message.message_id,
                 )
                 try:
-                    screenshot_path, page_title = await take_screenshot(address)
+                    screenshot_path, page_title = await take_screenshot(
+                        address, message
+                    )
                     # функция формирующая описание скриншота
                     end_time = time.time()
                     execution_time = end_time - start_time
@@ -60,7 +62,7 @@ async def process_message_with_url(message: Message) -> None:
                         )
                     )
                 except WebDriverException:
-                    logger.exception(f"Something went wrong. URL: {entity}")
+                    logger.exception(f"Something went wrong. URL: {address}")
                     await asyncio.sleep(5)
                     await bot_response.edit_media(
                         media=InputMediaPhoto(

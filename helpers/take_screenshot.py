@@ -20,7 +20,7 @@ def address_formatter(url: str) -> str:
     return formatted_url
 
 
-def caption_maker(page_title: str, url: str, execution_time: float):
+async def caption_maker(page_title: str, url: str, execution_time: float):
     """
     Creates a caption to the message with screenshot.
     :param page_title: title of the webpage from user prompt, extracted by take_screenshot()
@@ -33,7 +33,7 @@ def caption_maker(page_title: str, url: str, execution_time: float):
     )
 
 
-def name_file(url: str, message: Message) -> str:
+async def name_file(url: str, message: Message) -> str:
     """
     Generates the name for screenshot.
     :param url: string, formatted like https://something.com
@@ -58,7 +58,7 @@ async def take_screenshot(url: str, message: Message) -> tuple[Path, str]:
     :return: None
     """
     screenshots_dir = Path.cwd() / "data" / "screenshots"
-    filename = name_file(url, message)
+    filename = await name_file(url, message)
     screenshot_path = screenshots_dir / filename
 
     options = webdriver.ChromeOptions()

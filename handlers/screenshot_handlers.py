@@ -43,7 +43,9 @@ async def process_message_with_url(message: Message) -> None:
                     await bot_response.edit_media(
                         media=InputMediaPhoto(
                             media=FSInputFile(screenshot_path),
-                            caption=caption_maker(page_title, address, execution_time),
+                            caption=await caption_maker(
+                                page_title, address, execution_time
+                            ),
                         )
                     )
                 except (WebDriverException, TelegramNetworkError):
@@ -51,7 +53,7 @@ async def process_message_with_url(message: Message) -> None:
                     await bot_response.edit_media(
                         media=InputMediaPhoto(
                             media=FSInputFile("data/sorry.png"),
-                            caption=LEXICON_RUS["error"],
+                            caption=LEXICON_RUS["error_generic"],
                         ),
                     )
                 except TimeoutException:

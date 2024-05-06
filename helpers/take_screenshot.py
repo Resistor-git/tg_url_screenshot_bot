@@ -1,3 +1,4 @@
+import re
 import logging
 from pathlib import Path
 
@@ -16,12 +17,7 @@ def name_file(url: str, message: Message) -> str:
     """
     date_time: str = message.date.strftime("%y-%m-%d-%H-%M-%S")
     user_id: str = str(message.from_user.id)  # если в канале, то пустое?
-    domain: str = (
-        url.replace("https://", "")
-        .replace("http://", "")
-        .replace("www.", "")
-        .replace(".", "-")
-    )
+    domain: str = re.search(r"(?<=://)([^/]+)", url).group(1).replace(".", "-")
     # сюда должен прилетать нормализованный адрес
     return "_".join((date_time, user_id, domain)) + ".png"
 

@@ -1,9 +1,9 @@
-import asyncio
 import logging
 import time
 
-from aiogram import Router, Bot
-from aiogram.types import Message, ErrorEvent, InputMediaPhoto, FSInputFile
+from aiogram import Router
+from aiogram.exceptions import TelegramNetworkError
+from aiogram.types import Message, InputMediaPhoto, FSInputFile
 from selenium.common import WebDriverException
 
 from helpers import take_screenshot, address_formatter, caption_maker
@@ -21,19 +21,6 @@ async def process_message_with_url(message: Message) -> None:
     :param message: message from the user (built-in aiogram type)
     :return: None
     """
-    # url_pattern = r'(?:(?:https?|http):\/\/)?[\w/\-?=%.]+\.[\w/\-&?=%.]+'
-    #
-    # matches = re.findall(url_pattern, message.text)
-    # #
-    # # if matches:
-    # #     # обработать google.com -> str.startswith() hhtps//...
-    # #     for match in matches:
-    # #         print(match)
-    #         # await message.answer(text=LEXICON_RUS["processing"])
-    #         # # записать событие в лог
-    #         # await take_screenshot(match)
-    #         # await message.answer(text='empty done')
-
     start_time = time.time()
     entities: list = message.entities
     if entities:
@@ -57,18 +44,11 @@ async def process_message_with_url(message: Message) -> None:
                             caption=caption_maker(page_title, address, execution_time),
                         )
                     )
-                except WebDriverException:
+                except (WebDriverException, TelegramNetworkError):
                     logger.exception(f"Something went wrong. URL: {address}")
-                    await asyncio.sleep(5)
                     await bot_response.edit_media(
                         media=InputMediaPhoto(
                             media=FSInputFile("data/sorry.png"),
                             caption=LEXICON_RUS["error"],
                         ),
                     )
-
-
-# @router_screenshot.error()
-# async def error_handler(event: ErrorEvent):
-#     # лог
-#     pass

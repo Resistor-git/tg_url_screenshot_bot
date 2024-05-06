@@ -67,11 +67,11 @@ async def take_screenshot(url: str, message: Message) -> tuple[Path, str]:
     driver = webdriver.Chrome(options=options)
 
     driver.get(url)
+    driver.set_page_load_timeout(30)
     page_title = driver.title
     driver.save_screenshot(screenshot_path)
+    driver.quit()
 
     logger.info(f"Saved screenshot. Filename: {screenshot_path.name} URL: {url}")
-
-    driver.quit()
 
     return screenshot_path, page_title

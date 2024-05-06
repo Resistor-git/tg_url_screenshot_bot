@@ -4,7 +4,7 @@ import time
 from aiogram import Router
 from aiogram.exceptions import TelegramNetworkError
 from aiogram.types import Message, InputMediaPhoto, FSInputFile
-from selenium.common import WebDriverException
+from selenium.common import WebDriverException, TimeoutException
 
 from helpers import take_screenshot, address_formatter, caption_maker
 from lexicon import LEXICON_RUS
@@ -50,5 +50,13 @@ async def process_message_with_url(message: Message) -> None:
                         media=InputMediaPhoto(
                             media=FSInputFile("data/sorry.png"),
                             caption=LEXICON_RUS["error"],
+                        ),
+                    )
+                except TimeoutException:
+                    logger.exception(f"No response from site. URL: {address}")
+                    await bot_response.edit_media(
+                        media=InputMediaPhoto(
+                            media=FSInputFile("data/sorry.png"),
+                            caption=LEXICON_RUS["error_no_response"],
                         ),
                     )

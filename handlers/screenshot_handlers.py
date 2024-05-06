@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import time
 
@@ -33,9 +34,10 @@ async def process_message_with_url(message: Message) -> None:
                     reply_to_message_id=message.message_id,
                 )
                 try:
-                    screenshot_path, page_title = await take_screenshot(
-                        address, message
+                    screenshot_task = asyncio.create_task(
+                        take_screenshot(address, message)
                     )
+                    screenshot_path, page_title = await screenshot_task
                     end_time = time.time()
                     execution_time = end_time - start_time
                     await bot_response.edit_media(

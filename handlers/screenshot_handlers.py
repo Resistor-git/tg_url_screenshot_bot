@@ -1,12 +1,19 @@
 import logging.handlers
 import time
 
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.exceptions import TelegramNetworkError
-from aiogram.types import Message, InputMediaPhoto, FSInputFile
+from aiogram.types import (
+    Message,
+    InputMediaPhoto,
+    FSInputFile,
+    CallbackQuery,
+    MessageEntity,
+)
 from selenium.common import WebDriverException, TimeoutException
 
-from helpers import take_screenshot, address_formatter, caption_maker
+from helpers import take_screenshot, address_formatter, caption_maker, get_whois
+from keyboards import keyboard_more
 from lexicon import LEXICON_RUS
 
 router_screenshot = Router()
@@ -31,8 +38,8 @@ async def process_message_with_url(message: Message) -> None:
     :param message: message from the user (built-in aiogram type)
     :return: None
     """
-    start_time = time.time()
-    entities: list = message.entities
+    start_time: float = time.time()
+    entities: list[MessageEntity] = message.entities
     if entities:
         for entity in entities:
             if entity.type == "url":
@@ -46,13 +53,14 @@ async def process_message_with_url(message: Message) -> None:
                     screenshot_path, page_title = await take_screenshot(
                         address, message
                     )
-                    end_time = time.time()
-                    execution_time = end_time - start_time
+                    end_time: float = time.time()
+                    execution_time: float = end_time - start_time
                     await bot_response.edit_media(
                         media=InputMediaPhoto(
                             media=FSInputFile(screenshot_path),
                             caption=caption_maker(page_title, address, execution_time),
-                        )
+                        ),
+                        reply_markup=keyboard_more,
                     )
                 except (WebDriverException, TelegramNetworkError):
                     logger.exception(f"Something went wrong. URL: {address}")
@@ -60,7 +68,7 @@ async def process_message_with_url(message: Message) -> None:
                         media=InputMediaPhoto(
                             media=FSInputFile("data/sorry.png"),
                             caption=LEXICON_RUS["error_generic"],
-                        ),
+                        )
                     )
                 except TimeoutException:
                     logger.exception(f"No response from site. URL: {address}")
@@ -68,5 +76,22 @@ async def process_message_with_url(message: Message) -> None:
                         media=InputMediaPhoto(
                             media=FSInputFile("data/sorry.png"),
                             caption=LEXICON_RUS["error_no_response"],
-                        ),
+                        )
                     )
+
+
+@router_screenshot.callback_query(F.data == "button_more_press")
+async def process_button_more_press(callback: CallbackQuery) -> None:
+    """
+    Shows alert message with information about domain.
+    Url (domain) is taken from the quoted message.
+    Info is provided by function get_whois()
+    :param callback:
+    :return:
+    """
+    message: Message = callback.message.reply_to_message
+    entities: list[MessageEntity] = message.entities
+    for entity in entities:
+        if entity.type == "url":
+            url = entity.extract_from(message.text)
+    await callback.answer(text=get_whois(url), show_alert=True)

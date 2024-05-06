@@ -6,7 +6,7 @@ from aiogram import Router, Bot
 from aiogram.types import Message, ErrorEvent, InputMediaPhoto, FSInputFile
 from selenium.common import WebDriverException
 
-from helpers import take_screenshot
+from helpers import take_screenshot, address_formatter, caption_maker
 from lexicon import LEXICON_RUS
 
 router_screenshot = Router()
@@ -35,12 +35,11 @@ async def process_message_with_url(message: Message) -> None:
     #         # await message.answer(text='empty done')
 
     start_time = time.time()
-
     entities: list = message.entities
     if entities:
         for entity in entities:
             if entity.type == "url":
-                address = entity.extract_from(message.text)
+                address = address_formatter(entity.extract_from(message.text))
                 bot_response: Message = await message.answer_photo(
                     photo=FSInputFile("data/loading.gif"),
                     caption=LEXICON_RUS["processing"],
@@ -50,15 +49,12 @@ async def process_message_with_url(message: Message) -> None:
                     screenshot_path, page_title = await take_screenshot(
                         address, message
                     )
-                    # функция формирующая описание скриншота
                     end_time = time.time()
                     execution_time = end_time - start_time
-
                     await bot_response.edit_media(
                         media=InputMediaPhoto(
                             media=FSInputFile(screenshot_path),
-                            caption=f"{page_title}\n\nВеб-сайт: {address}\nВремя обработки: {execution_time:.2f}"
-                            f" секунд",
+                            caption=caption_maker(page_title, address, execution_time),
                         )
                     )
                 except WebDriverException:

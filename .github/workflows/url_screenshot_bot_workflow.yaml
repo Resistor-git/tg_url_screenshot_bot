@@ -3,7 +3,7 @@ name: url screenshot bot workflow
 on:
   push:
     branches:
-      - main
+      - feature/selenium_screenshot
 
 jobs:
   linter:

@@ -1,11 +1,20 @@
 import re
-import logging
+import logging.handlers
 from pathlib import Path
 
 from aiogram.types import Message
 from selenium import webdriver
 
 logger = logging.getLogger(__name__)
+formatter = logging.Formatter(
+    "%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s\n"
+    "---------------------------------------------------------"
+)
+file_handler = logging.handlers.RotatingFileHandler(
+    "logs/general.log", encoding="utf-8", maxBytes=1 * 1024 * 1024, backupCount=2
+)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 
 def address_formatter(url: str) -> str:

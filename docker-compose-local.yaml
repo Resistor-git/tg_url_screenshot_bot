@@ -8,3 +8,4 @@ services:
       - .env
     volumes:
       - ./data/screenshots:/app/data/screenshots
+      - ./logs:/app/logs

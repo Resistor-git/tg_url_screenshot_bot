@@ -1,4 +1,4 @@
-import logging
+import logging.handlers
 import time
 
 from aiogram import Router
@@ -12,6 +12,16 @@ from lexicon import LEXICON_RUS
 router_screenshot = Router()
 
 logger = logging.getLogger(__name__)
+
+formatter = logging.Formatter(
+    "%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s\n"
+    "---------------------------------------------------------"
+)
+file_handler = logging.handlers.RotatingFileHandler(
+    "logs/general.log", encoding="utf-8", maxBytes=1 * 1024 * 1024, backupCount=2
+)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 
 @router_screenshot.message()
@@ -49,7 +59,7 @@ async def process_message_with_url(message: Message) -> None:
                     await bot_response.edit_media(
                         media=InputMediaPhoto(
                             media=FSInputFile("data/sorry.png"),
-                            caption=LEXICON_RUS["error"],
+                            caption=LEXICON_RUS["error_generic"],
                         ),
                     )
                 except TimeoutException:

@@ -5,6 +5,7 @@ from aiogram import Bot, Dispatcher
 
 from config_data.config import Config, load_config
 from handlers import router_screenshot, router_other
+from helpers import db_connect
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +19,14 @@ async def main() -> None:
     logger.info("Bot launch")
 
     config: Config = load_config()
+
+    # db_conn = db_connect(
+    #     db_host=config.db_connection.db_host,
+    #     db_name=config.db_connection.db_name,
+    #     db_user=config.db_connection.db_user,
+    #     db_password=config.db_connection.db_password,
+    #     db_port=config.db_connection.db_port,
+    # )
 
     bot = Bot(
         token=config.tg_bot.bot_token,

@@ -5,6 +5,8 @@ from pathlib import Path
 from aiogram.types import Message
 from selenium import webdriver
 
+from helpers import db_connect
+
 logger = logging.getLogger(__name__)
 formatter = logging.Formatter(
     "%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s\n"
@@ -79,6 +81,29 @@ async def take_screenshot(url: str, message: Message) -> tuple[Path, str]:
     page_title = driver.title
     driver.save_screenshot(screenshot_path)
     driver.quit()
+
+    # ONLY FOR TEST PURPOSE
+    with db_connect(
+        db_host="localhost",
+        db_name="url_screenshot",
+        db_user="",
+        db_password="",
+        db_port="5432",
+    ) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS users (
+                    id serial PRIMARY KEY,
+                    tg_id integer
+                    )
+                """
+            )
+            cur.execute("INSERT INTO users (tg_id) VALUES (%s)", (5897335213,))
+            cur.execute("SELECT * FROM users")
+            cur.fetchone()
+            for record in cur:
+                print(record)
 
     logger.info(f"Saved screenshot. Filename: {screenshot_path.name} URL: {url}")
 

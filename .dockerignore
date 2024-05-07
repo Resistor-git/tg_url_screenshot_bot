@@ -7,4 +7,4 @@
 .vscode
 
 # screenshots
-data/screenshots/*.png
+#data/screenshots/*.png

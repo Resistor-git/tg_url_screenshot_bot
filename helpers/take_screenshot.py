@@ -23,9 +23,9 @@ def address_formatter(url: str) -> str:
     :param url: string, result of entity.extract_from aiogram method
     :return: string formatted like https://something.com or http://something.com
     """
-    if url.startswith("https://") or url.startswith("http://"):
-        return url
-    formatted_url: str = "https://" + url
+    if url.lower().startswith("https://") or url.lower().startswith("http://"):
+        return url.lower()
+    formatted_url: str = "https://" + url.lower()
     return formatted_url
 
 

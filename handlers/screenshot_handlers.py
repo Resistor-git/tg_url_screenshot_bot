@@ -91,6 +91,7 @@ async def process_button_more_press(callback: CallbackQuery) -> None:
     """
     message: Message = callback.message.reply_to_message
     entities: list[MessageEntity] = message.entities
+    url = LEXICON_RUS["no_whois"]
     for entity in entities:
         if entity.type == "url":
             url = entity.extract_from(message.text)

@@ -2,7 +2,7 @@
 https://t.me/url_screenshot_bot \
 Бот делает скриншот страницы по ссылке предоставленной пользователем.
 
-## Как попробовать бота в деле
+## Демонстрация работы бота
 * Найти бота в telegram: https://t.me/url_screenshot_bot (Res Url Screenshot Bot).
 * Нажать `start` или набрать команду `/start`.
 * Отправить ссылку на сайт в любом формате. Например: https://www.google.com, http://google.com, www.google.com, google.com.
@@ -11,18 +11,35 @@ https://t.me/url_screenshot_bot \
 
 ## Как развернуть бота локально (без Docker)
 * Клонировать репозиторий.
-* Создать в корне проекта файл `.env` и указать `BOT_TOKEN` - токен вашего бота. Образец файла: `.env.example`. Инструкция по получению токена: https://core.telegram.org/bots/tutorial#obtain-your-bot-token
+* Создать в корне проекта (в папке с файлом `main.py`) файл `.env` и указать `BOT_TOKEN` - токен вашего бота. Образец файла: `.env.example`. Инструкция по получению токена: https://core.telegram.org/bots/tutorial#obtain-your-bot-token
 * Установить зависимости из `requirements.txt`: команда `pip install -r requirements.txt`.
 * Запустить `main.py`
 
 ## Как развернуть бота в Docker контейнере
 * Клонировать репозиторий.
-* Создать в корне проекта файл `.env` и указать `BOT_TOKEN` - токен вашего бота. Образец файла: `.env.example`. Инструкция по получению токена: https://core.telegram.org/bots/tutorial#obtain-your-bot-token
-* Создать образ и запустить контейнер: в корне проекта выполнить команду `docker compose -f docker-compose-local.yaml up`
-* Либо скачать образ из docker-hub: `docker compose -f docker-compose-production.yaml up`
+* Создать в корне проекта (в папке с файлом `main.py`) файл `.env` и указать `BOT_TOKEN` - токен вашего бота. Образец файла: `.env.example`. Инструкция по получению токена: https://core.telegram.org/bots/tutorial#obtain-your-bot-token
+* а) Создать образ и запустить контейнер: в корне проекта выполнить команду `docker compose -f docker-compose-local.yaml up`
+* б) Либо скачать образ из docker-hub: `docker compose -f docker-compose-production.yaml up`
+
+
+## Размещение бота на удалённом сервере
+Для переноса бота на удалённый сервер можно воспользоваться GitHub workflow. Файл находится в папке `.github/workflows`.
+Он сохраняет код в репозитории GitHub, проверяет код линтером Black, собирает образ и заливает его на docker hub.
+Далее происходит подключение к удалённому серверу, копирование файла docker compose с локальной машины и запуск контейнера
+на сервере. Обратите внимание, в конце выполняется `docker system prune -f`, что может привести к потере данных.\
+Чтобы workflow работал необходимо в вашей копии репозитория указать "секреты":
+* DOCKERHUB_USERNAME - логин на docker hub.
+* DOCKERHUB_PASSWORD - пароль docker hub.
+* HOST - IP адрес удалённого сервера.
+* USERNAME - имя пользователя удалённого сервера.
+* SSH_KEY - ключ SSH для подключения к удалённому серверу.
+* SSH_KEY_PASSPHRASE - пароль от SSH ключа.
+Более подробно про "секреты": https://docs.github.com/ru/actions/security-guides/using-secrets-in-github-actions
+Более подробно про GitHub Actions workflows: https://docs.github.com/en/actions/using-workflows/about-workflows
+
 
 ## Логи и скриншоты
-Бот сохраняет логи в папку `logs`, скриншоты в папку `data/screenshots`.
+Бот сохраняет логи в папку `logs`, скриншоты в папку `data/screenshots`. Имя скриншота формируется по шаблону: дата, время, id пользователя telegram, домен.
 
 ## Стэк
 Python 3.12 \
